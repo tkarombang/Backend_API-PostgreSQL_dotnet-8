@@ -1,0 +1,6 @@
+@pAzwar_HostAddress = http://localhost:5020
+
+GET {{pAzwar_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
