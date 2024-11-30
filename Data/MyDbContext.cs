@@ -10,12 +10,24 @@ namespace MyApp.Data
 
         public DbSet<MyEntity> MyEntities { get; set; } // Contoh DbSet
         public DbSet<ProjectDeveloper> ProjectDevelopers { get; set; } // Contoh DbSet
+        public DbSet<Developer> Developers { get; set; } // Contoh DbSet
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProjectDeveloper>()
-                .HasKey(pd => pd.developer_id); // Menentukan primary key dengan Fluent API
+            modelBuilder.HasDefaultSchema("public");
+
+            modelBuilder.Entity<Developer>(entity =>
+            {
+                entity.ToTable("developers"); // Pastikan nama tabel sesuai dengan database
+                entity.HasKey(d => d.developer_id); // Menentukan primary key
+            });
+
+            modelBuilder.Entity<ProjectDeveloper>(entity =>
+            {
+                entity.ToTable("project_developers"); // Pastikan nama tabel sesuai
+                entity.HasKey(pd => pd.developer_id);
+            });
         }
 
 

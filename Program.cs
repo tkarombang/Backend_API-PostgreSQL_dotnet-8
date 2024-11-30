@@ -25,6 +25,8 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 
 // Tambahkan middleware untuk memetakan endpoint controller
-app.MapControllers();
+
+
+ app.MapControllers();
 
 app.Run();

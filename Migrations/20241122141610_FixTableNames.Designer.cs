@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyApp.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241122141610_FixTableNames")]
+    partial class FixTableNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace MyApp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("jenis_kelamin")
+                    b.Property<int>("jenis_kelamin")
                         .HasColumnType("integer");
 
                     b.Property<string>("nama")
@@ -43,20 +46,23 @@ namespace MyApp.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("role")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("status")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("tanggal_lahir")
+                    b.Property<DateTime>("tanggal_lahir")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("developer_id");
 
-                    b.ToTable("developers", "public");
+                    b.ToTable("Developers", "public");
                 });
 
             modelBuilder.Entity("MyApp.Model.ProjectDeveloper", b =>
@@ -73,7 +79,7 @@ namespace MyApp.Migrations
 
                     b.HasKey("developer_id");
 
-                    b.ToTable("project_developers", "public");
+                    b.ToTable("ProjectDevelopers", "public");
                 });
 
             modelBuilder.Entity("MyEntity", b =>
