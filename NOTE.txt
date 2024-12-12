@@ -1,0 +1,17 @@
+REVIEW PELAJARAN API
+
+1. Periksa proyek lama:
+    a. buka proeyek lama di vscode
+    b. telusuri file seperti:
+        - Program.cs
+        - Folders Models, Controller, dan Migration
+        - File Konfigurasi seperti appsettings.json
+2. Pelajari Kembali Komponen Utama:
+    a. Model: Bagaimana struktur data didefinisikan.
+    b. Controller: Cara endpoint dibuat dan bagaimana permintaan (request)
+    c. Database: Lihat konfigurasi koneksi di appsettings.json
+3. Jalankan Proyek Lama:
+    a. jalankan dotnet run untuk melihat cara proyek bekerja
+4. Catat Hal yang Penting:
+    a. Documentasikan konsep penting seperti routing, middleware, dan query ke database.
+
