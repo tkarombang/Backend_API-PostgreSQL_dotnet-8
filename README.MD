@@ -8,7 +8,7 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
 ## 🛠️ Technologies Used
 - **Framework:** .NET 8
 - **Database:** PostgreSQL
-- **Tools:** Visual Studio, Postman, Docker (optional)
+- **Tools:** Visual Studio Code, Postman, Docker (optional)
 
 ---
 
@@ -17,13 +17,13 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
 ### Prerequisites
 1. **.NET SDK 8** - Download and install from [dotnet.microsoft.com](https://dotnet.microsoft.com/).
 2. **PostgreSQL** - Download and install from [postgresql.org](https://www.postgresql.org/).
-3. **IDE (e.g., Visual Studio)**.
+3. **IDE (e.g., Visual Studio) or Visual Studio Code with Extension (C#-.NET Install Tool, C# Dev Kit)**.
 4. **Postman** (optional for testing).
 
 ### Installation Steps
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/yourrepository.git
+   git clone https://github.com/tkarombang/Backend_API-PostgreSQL_Withdotnet-8.git
    cd yourrepository
    ```
 
@@ -33,7 +33,7 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
      ```json
      {
        "ConnectionStrings": {
-         "DefaultConnection": "Host=localhost;Database=yourdbname;Username=yourusername;Password=yourpassword"
+         "DefaultConnection": "Host=localhost;Database=sampledb;Username=postgres;Password=admin"
        }
      }
      ```
@@ -54,10 +54,9 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
 ```
 |-- YourProjectName
     |-- Controllers
-    |-- Models
     |-- Data
-    |-- Services
-    |-- Migrations
+    |-- Migration
+    |-- Model
     |-- appsettings.json
     |-- Program.cs
     |-- Startup.cs
@@ -101,11 +100,6 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
 2. Create a feature branch.
 3. Commit your changes.
 4. Open a pull request.
-
----
-
-## 📄 License
-This project is licensed under the MIT License.
 
 ---
 
