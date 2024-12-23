@@ -29,7 +29,7 @@ namespace MyApp.DeveloperControllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetDeveloperById(int id)
         {
-            var developer = await _context.Developers.FirstOrDefaultAsync(d => d.developer_id == id);
+            var developer = await _context.Developers.FirstOrDefaultAsync(d => d.DeveloperId == id);
 
             if (developer == null)
             {
@@ -44,7 +44,7 @@ namespace MyApp.DeveloperControllers
         public async Task<IActionResult> GetDeveloperByName(string name)
         {
             var developers = await _context.Developers
-                .Where(d => EF.Functions.ILike(d.nama, $"%{name}%"))
+                .Where(d => EF.Functions.ILike(d.Nama, $"%{name}%"))
                 .ToListAsync();
 
             if (developers == null || developers.Count == 0)

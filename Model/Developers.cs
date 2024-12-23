@@ -1,20 +1,51 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.VisualBasic;
 
 namespace MyApp.Model
 {
+    [Table("developers")]
     public class Developer
     {
         [Key] // Menentukan developer_id sebagai primary key
-        public int developer_id { get; set; }
+        [Column("developer_id")]
+        public int DeveloperId { get; set; }
 
-        public string nama { get; set; }
-        public string email { get; set; }
-        public string? role { get; set; } 
-        public string? phone { get; set; }
-        public DateTime? tanggal_lahir { get; set; }
-        public string? status { get; set; }
-        public int? jenis_kelamin { get; set; }
+    
+        [MaxLength(100)] 
+        [Column("nama")] // Nama Kolom Di Database
+        public required string Nama { get; set; }
+
+
+        [EmailAddress] // Validasi format email
+        [Column("email")]
+        public required string Email { get; set; }
+
+        [MaxLength(50)] // Maksimal 50 karakter
+        [Column("role")]
+        public string? Role { get; set; } 
+
+        [MaxLength(15)]
+        [Phone] // Validasi format nomor hp
+        [Column("phone")]
+        public string? Phone { get; set; }
+
+        [DataType(DataType.Date)] // Format Tanggal
+        [Column("tanggal_lahir")]
+        public DateTime? TanggalLahir { get; set; }
+
+        [MaxLength(20)]
+        [Column("status")]
+        public string? Status { get; set; }
+
+        [Column("jenis_kelamin")]
+        public JenisKelamin? Gender { get; set; }
+    }
+
+    // Enum untuk jenis kelamin
+    public enum JenisKelamin{
+        Pria = 1,
+        Wanita = 2
     }
 }
 
