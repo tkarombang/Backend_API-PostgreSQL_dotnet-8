@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("pAzwar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e56cf4767c87f203035a64036d3da255bd1f7c17")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb74f3125e1f5466873b2533c867615a871baa26")]
 [assembly: System.Reflection.AssemblyProductAttribute("pAzwar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("pAzwar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

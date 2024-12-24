@@ -92,7 +92,34 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
     http://localhost:5020/swagger
     ```
   - It automatically generates interactive API documentation based on your code annotations.
+  
+---
 
+## Swagger API Response
+![Swagger Response](docs/api.png)
+
+### Contoh Respons
+Respons API mengembalikan data proyek dalam format JSON, yang berisi informasi seperti:
+- `projectId`: ID proyek
+- `nama`: Nama proyek
+- `description`: Deskripsi proyek
+- `start_Date`: Tanggal mulai proyek
+- `end_Date`: Tanggal selesai proyek
+- `status`: Status proyek
+
+Berikut adalah contoh respons JSON:
+```json
+[
+  {
+    "projectId": 1,
+    "nama": "Website Redesign",
+    "description": "Desain ulang website perusahaan",
+    "start_Date": "2024-01-10T00:00:00",
+    "end_Date": "2024-04-10T00:00:00",
+    "status": "In Progress"
+  },
+]
+```
 ---
 
 ## 🤝 Contributions
