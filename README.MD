@@ -1,7 +1,7 @@
 # Backend API - PostgreSQL with .NET 8
 
 ## 📋 Project Overview
-This project is a backend API built with .NET 8 and PostgreSQL. It serves as a portfolio example showcasing CRUD operations, authentication, and API endpoint creation.
+This project is a backend API built with .NET 8 and PostgreSQL. It serves as a portfolio example showcasing CRUD operations, authentication, and API endpoint creation. you can access fo [Frontend](https://github.com/tkarombang/Frontend_TS_Fullstack) 
 
 ---
 
@@ -92,10 +92,13 @@ This project is a backend API built with .NET 8 and PostgreSQL. It serves as a p
     http://localhost:5020/swagger
     ```
   - It automatically generates interactive API documentation based on your code annotations.
-  
+
 ---
 
 ## Swagger API Response
+We're using Swagger to documnet this API. Here's an example of what you'll get when you request a list of projects.
+
+After running dotnet run in the terminal, please access the URL in your browser's address tab as shown  in the image below
 ![Swagger Response](docs/api.png)
 
 ### Contoh Respons
