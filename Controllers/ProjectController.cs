@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+// using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using MyApp.Data;
-using System.Linq;
+using MyApp.Model;
+
 
 namespace MyApp.ProjectControllers
 {
@@ -92,6 +94,58 @@ namespace MyApp.ProjectControllers
             }
 
             return Ok(projects);
+        }
+
+        /// <summary>
+        // POST
+        /// <summary>
+        [HttpPost]
+        public async Task<IActionResult> CreateProject([FromBody] Project project)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _logger.LogInformation("Creating a new project.");
+
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProjectById), new { id = project.ProjectId }, project);
+        }
+
+        // PUT
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProject(int id, [FromBody] Project updateProject)
+        {
+            if(!ModelState.IsValid || id != updateProject.ProjectId)
+            {
+                return BadRequest("Invalid Data.");
+            }
+
+            var existingProject = await _context.Projects.FirstOrDefaultAsync(x => x.ProjectId == id);
+            if (existingProject == null)
+            {
+                return NotFound(new { Message = $"Project with ID {id} Not Found." });
+            }
+
+            existingProject.Nama = updateProject.Nama;
+            existingProject.Description = updateProject.Description;
+            existingProject.Start_Date = updateProject.Start_Date;
+            existingProject.End_Date = updateProject.End_Date;
+            existingProject.Status = updateProject.Status;
+
+            _context.Projects.Update(existingProject);
+
+
+            // updateProject.SomeDateTimeProperty = DateTime.SpecifyKind(updateProject.SomeDateTimeProperty, DateTimeKind.Utc);
+
+
+            await _context.SaveChangesAsync();
+
+            return Ok(existingProject);           
+
         }
     }
 }

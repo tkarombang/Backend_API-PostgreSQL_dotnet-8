@@ -21,15 +21,16 @@ namespace MyApp.Model
 
         [DataType(DataType.Date)]
         [Column("start_date")]
-        public DateTime? Start_Date { get; set; }
+        public DateTime Start_Date { get; set; }
         
         [DataType(DataType.Date)]
         [Column("end_date")]
-        public DateTime? End_Date { get; set; }
+        public DateTime End_Date { get; set; }
 
         [MaxLength(20)]
         [Column("status")]
         public string? Status{ get; set; }
+        // public DateTime SomeDateTimeProperty { get; internal set; }
     }
 
 }

@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Builder;
 using MyApp.Data;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,12 +31,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 // Tambahkan middleware routing untuk mendukung controller
 app.UseRouting();
 
+// TimeZone
+
+
 // Tambahkan middleware untuk memetakan endpoint controller
-
-
 app.UseCors("AllowAll");
 
 

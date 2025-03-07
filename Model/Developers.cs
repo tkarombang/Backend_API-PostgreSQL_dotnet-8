@@ -40,6 +40,7 @@ namespace MyApp.Model
 
         [Column("jenis_kelamin")]
         public JenisKelamin? Gender { get; set; }
+        public string? GenderLabel => Gender.HasValue ? Gender.Value.ToString() : null;
     }
 
     // Enum untuk jenis kelamin

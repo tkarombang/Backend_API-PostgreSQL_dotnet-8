@@ -14,9 +14,24 @@ namespace MyApp.Data
         public DbSet<ProjectDeveloper> ProjectDevelopers { get; set; } // Contoh DbSet
 
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("public");
+
+            modelBuilder.Entity<Project>()
+                .Property(proj => proj.Start_Date)
+                .HasConversion(
+                    v => v.ToUniversalTime(),
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                );
+            
+            modelBuilder.Entity<Project>()
+                .Property(proj => proj.End_Date)
+                .HasConversion(
+                    v => v.ToUniversalTime(),
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                );
 
             modelBuilder.Entity<Developer>(entity =>
             {
@@ -33,7 +48,7 @@ namespace MyApp.Data
             modelBuilder.Entity<ProjectDeveloper>(entity =>
             {
                 entity.ToTable("project_developers"); // Pastikan nama tabel sesuai
-                entity.HasKey(pd => pd.developer_id);
+                entity.HasKey(pd => pd.Developer_id);
             });
         }
 
@@ -44,5 +59,5 @@ namespace MyApp.Data
 public class MyEntity
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }
