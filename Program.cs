@@ -17,6 +17,11 @@ builder.Services.AddCors(option => {
     });
 });
 
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+
 // Tambahkan layanan controller dan Swagger
 builder.Services.AddControllers(); // Penting untuk MapControllers
 builder.Services.AddEndpointsApiExplorer();

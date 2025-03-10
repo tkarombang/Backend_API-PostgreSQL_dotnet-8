@@ -12,10 +12,12 @@ namespace MyApp.DeveloperControllers
 	public class DevelopersController : ControllerBase
 	{
 		private readonly MyDbContext _context;
+		private readonly ILogger<DevelopersController> _logger;
 
-		public DevelopersController(MyDbContext context)
+		public DevelopersController(MyDbContext context, ILogger<DevelopersController> logger)
 		{
 			_context = context;
+			_logger = logger;
 		}
 
 		// GET: api/developers

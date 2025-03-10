@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyApp.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250310122212_ProjectAndDevelopersToTask")]
+    partial class ProjectAndDevelopersToTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,21 +114,24 @@ namespace MyApp.Migrations
 
             modelBuilder.Entity("MyApp.Model.ProjectDeveloper", b =>
                 {
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer")
-                        .HasColumnName("project_id")
-                        .HasColumnOrder(0);
-
-                    b.Property<int>("DeveloperId")
-                        .HasColumnType("integer")
-                        .HasColumnName("developer_id")
+                    b.Property<string>("Developer_id")
+                        .HasColumnType("text")
                         .HasColumnOrder(1);
 
-                    b.HasKey("ProjectId", "DeveloperId");
+                    b.Property<int>("DeveloperId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnOrder(0);
+
+                    b.HasKey("Developer_id");
 
                     b.HasIndex("DeveloperId");
 
-                    b.ToTable("project_developer", "public");
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("project_developers", "public");
                 });
 
             modelBuilder.Entity("MyEntity", b =>
@@ -201,19 +207,19 @@ namespace MyApp.Migrations
 
             modelBuilder.Entity("MyApp.Model.ProjectDeveloper", b =>
                 {
-                    b.HasOne("MyApp.Model.Developer", "Developers")
-                        .WithMany("ProjectDevelopers")
+                    b.HasOne("MyApp.Model.Developer", "Developer")
+                        .WithMany()
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyApp.Model.Project", "Project")
-                        .WithMany("ProjectDeveloper")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Developers");
+                    b.Navigation("Developer");
 
                     b.Navigation("Project");
                 });
@@ -237,15 +243,11 @@ namespace MyApp.Migrations
 
             modelBuilder.Entity("MyApp.Model.Developer", b =>
                 {
-                    b.Navigation("ProjectDevelopers");
-
                     b.Navigation("TaskItem");
                 });
 
             modelBuilder.Entity("MyApp.Model.Project", b =>
                 {
-                    b.Navigation("ProjectDeveloper");
-
                     b.Navigation("TaskItem");
                 });
 #pragma warning restore 612, 618

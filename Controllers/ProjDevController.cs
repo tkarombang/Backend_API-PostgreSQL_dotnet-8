@@ -18,7 +18,7 @@ namespace MyApp.Controllers{
         {
             var projectDevelopers = await _context.ProjectDevelopers
                 .Include(pd => pd.Project)
-                .Include(pd => pd.Developer)
+                .Include(pd => pd.Developers)
                 .ToListAsync();
 
                 return Ok(projectDevelopers);
