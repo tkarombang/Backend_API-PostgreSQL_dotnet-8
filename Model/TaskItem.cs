@@ -34,5 +34,5 @@ public class TaskItem
     [ForeignKey("ProjectId")]
     [Column("project_id")]
     public int ProjectId { get; set; }
-    public required Project Project { get; set; }
+    public Project? Project { get; set; }
 }

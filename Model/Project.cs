@@ -32,8 +32,6 @@ namespace MyApp.Model
         public string? Status{ get; set; }
         // public DateTime SomeDateTimeProperty { get; internal set; }
 
-        public ICollection<TaskItem> TaskItem { get; set; }
-        public ICollection<ProjectDeveloper> ProjectDeveloper { get; set; }
     }
 
 }

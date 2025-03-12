@@ -42,8 +42,8 @@ namespace MyApp.Model
         public JenisKelamin? Gender { get; set; }
         public string? GenderLabel => Gender.HasValue ? Gender.Value.ToString() : null;
 
-        public ICollection<TaskItem> TaskItem { get; set; }
-        public ICollection<ProjectDeveloper> ProjectDevelopers { get; set; }
+        // public ICollection<TaskItem>? TaskItem { get; set; }
+        // public ICollection<ProjectDeveloper>? ProjectDevelopers { get; set; }
     }
 
     // Enum untuk jenis kelamin

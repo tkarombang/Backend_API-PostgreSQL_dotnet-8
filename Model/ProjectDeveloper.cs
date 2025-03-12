@@ -12,7 +12,7 @@ namespace MyApp.Model
         public int DeveloperId { get; set; }
 
         //NAVIGATION PROPERTION
-        public required Project Project { get; set; }
-        public required Developer Developers { get; set; }
+        public Project? Project { get; set; }
+        public Developer? Developers { get; set; }
     }
 }

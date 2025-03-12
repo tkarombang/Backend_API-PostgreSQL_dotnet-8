@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyApp.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250310174853_createDeveloperTable")]
+    partial class createDeveloperTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,13 +205,13 @@ namespace MyApp.Migrations
             modelBuilder.Entity("MyApp.Model.ProjectDeveloper", b =>
                 {
                     b.HasOne("MyApp.Model.Developer", "Developers")
-                        .WithMany()
+                        .WithMany("ProjectDevelopers")
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyApp.Model.Project", "Project")
-                        .WithMany()
+                        .WithMany("ProjectDeveloper")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -221,11 +224,11 @@ namespace MyApp.Migrations
             modelBuilder.Entity("TaskItem", b =>
                 {
                     b.HasOne("MyApp.Model.Developer", "Developers")
-                        .WithMany()
+                        .WithMany("TaskItem")
                         .HasForeignKey("DeveloperId");
 
                     b.HasOne("MyApp.Model.Project", "Project")
-                        .WithMany()
+                        .WithMany("TaskItem")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -233,6 +236,20 @@ namespace MyApp.Migrations
                     b.Navigation("Developers");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("MyApp.Model.Developer", b =>
+                {
+                    b.Navigation("ProjectDevelopers");
+
+                    b.Navigation("TaskItem");
+                });
+
+            modelBuilder.Entity("MyApp.Model.Project", b =>
+                {
+                    b.Navigation("ProjectDeveloper");
+
+                    b.Navigation("TaskItem");
                 });
 #pragma warning restore 612, 618
         }
