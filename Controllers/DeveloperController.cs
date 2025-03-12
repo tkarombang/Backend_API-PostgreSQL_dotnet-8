@@ -109,8 +109,25 @@ namespace MyApp.DeveloperControllers
 			}catch(DbUpdateException){
 				return StatusCode(500, "Terjadi Kesalahaan Saat Menyimpan Data");
 			}
+		}
 
 
+		//DELETE: api/developers/{id}
+		[HttpDelete("{id:int}")]
+		public async Task<IActionResult> DeleteDeveloper(int id)
+		{
+			var developer = await _context.Developers.FindAsync(id);
+			if(developer == null){
+				return NotFound($"Developer dengan {id} TIDAK DITEMUKAN");
+			}
+
+			try{
+				_context.Developers.Remove(developer);
+				await _context.SaveChangesAsync();
+				return NoContent();
+			}catch(Exception ex){
+				return BadRequest(ex.Message);
+			}
 		}
 	}
 }

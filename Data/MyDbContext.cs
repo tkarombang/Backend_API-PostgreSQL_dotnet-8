@@ -60,12 +60,12 @@ namespace MyApp.Data
 
                 // RELASI KE PROJECT
                 entity.HasOne(pd => pd.Project)
-                    .WithMany(p => p.ProjectDeveloper)
+                    .WithMany()
                     .HasForeignKey(p => p.ProjectId);
 
                 // RELASI KE DEVELOPER
                 entity.HasOne(pd => pd.Developers)
-                    .WithMany(d => d.ProjectDevelopers)
+                    .WithMany()
                     .HasForeignKey(d => d.DeveloperId);
             });
 
@@ -75,12 +75,12 @@ namespace MyApp.Data
             
                 //KONFIGURASI RELASI Task -> Project
                 entity.HasOne(t => t.Project) //TASK MEMILIKI SATU PROJECT
-                    .WithMany(p => p.TaskItem) //PROJECT MEMILIKI BANYAK TASK
+                    .WithMany() //PROJECT MEMILIKI BANYAK TASK
                     .HasForeignKey(t => t.ProjectId); //FOREIGN KEY ADALAH ProjectId
     
                 //KONFIGURASI RELASI Task -> Developers
                 entity.HasOne(t => t.Developers)
-                    .WithMany(d => d.TaskItem)
+                    .WithMany()
                     .HasForeignKey(t => t.DeveloperId);
             });
         

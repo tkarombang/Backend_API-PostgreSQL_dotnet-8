@@ -147,5 +147,23 @@ namespace MyApp.ProjectControllers
             return Ok(existingProject);           
 
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            var project = await _context.Projects.FindAsync(id);
+            if(project == null){
+                return NotFound($"Project dengan {id} Tidak Ditemukan");
+            }
+
+            try{
+                _context.Projects.Remove(project);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

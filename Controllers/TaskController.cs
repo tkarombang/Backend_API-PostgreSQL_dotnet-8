@@ -20,14 +20,14 @@ namespace MyApp.Controllers
     [HttpGet]
     public async Task<IActionResult> GetAllTasks()
     {
-      
+
       _logger.LogInformation("Fetching All Task");
       var task = await _context.TaskItems
         .Include(t => t.Project) //RELASI KE PROJECT
         .Include(t => t.Developers) //RELASI KE DEVELOPER
-        .ToListAsync(); 
+        .ToListAsync();
 
-        return Ok(task);
+      return Ok(task);
     }
 
     [HttpGet("{id:int}")]
@@ -39,48 +39,85 @@ namespace MyApp.Controllers
         .Include(t => t.Developers)
         .FirstOrDefaultAsync(t => t.TaskId == id);
 
-        if(task == null){
-          return NotFound($"Task Dengan {id} Tidak ditemukan");
-        }
+      if (task == null)
+      {
+        return NotFound($"Task Dengan {id} Tidak ditemukan");
+      }
 
-        return Ok(task); 
+      var getTaskDTO = new GetTaskDTO
+      {
+        TaskId = task.TaskId,
+        Title = task.Title,
+        Description = task.Description,
+        StartDate = task.StartDate,
+        EndDate = task.EndDate,
+        Priority = task.Priority,
+        Status = task.Status,
+        DeveloperId = task.DeveloperId,
+        ProjectId = task.ProjectId,
+      };
+
+      return Ok(getTaskDTO);
     }
 
+
+
     [HttpPost]
-    public async Task<IActionResult> CreateTask([FromBody] TaskItem taskItem)
+    public async Task<IActionResult> CreateTask([FromBody] CreateTaskDTO dtoTask)
     {
-      if(!ModelState.IsValid){
+      if (!ModelState.IsValid)
+      {
         return BadRequest(ModelState);
       }
 
-      _context.TaskItems.Add(taskItem);
+      var createTaskDto = new TaskItem
+      {
+        Title = dtoTask.Title,
+        Description = dtoTask.Description,
+        StartDate = dtoTask.StartDate,
+        EndDate = dtoTask.EndDate,
+        Priority = dtoTask.Priority,
+        Status = dtoTask.Status,
+        DeveloperId = dtoTask.DeveloperId,
+        ProjectId = dtoTask.ProjectId
+      };
+
+      _context.TaskItems.Add(createTaskDto);
       await _context.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(GetTaskById), new  {id = taskItem.TaskId}, taskItem);
+      return CreatedAtAction(nameof(GetTaskById), new { id = createTaskDto.TaskId }, createTaskDto);
     }
 
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskItem taskItem)
+    public async Task<IActionResult> UpdateTask(int id, [FromBody] UpdateTaskDTO taskItemDto)
     {
-      _logger.LogInformation("Fetching All Task");
-      if(id != taskItem.TaskId){
-        return BadRequest("Task ID Tidak Cocok");
-      }
-
-      if(string.IsNullOrWhiteSpace(taskItem.Title) || string.IsNullOrWhiteSpace(taskItem.Description)){
-        return BadRequest("Title dan Description tidak boleh kosong.");
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
       }
 
       var existingTask = await _context.TaskItems.FindAsync(id);
-      if(existingTask == null){
+      if (existingTask == null)
+      {
         return NotFound($"Task dengan {id} Tidak Ditemukan");
-      } 
+      }
 
-      existingTask.Title = taskItem.Title;
-      existingTask.Description = taskItem.Description;
-      existingTask.ProjectId = taskItem.ProjectId;
-      existingTask.DeveloperId = taskItem.DeveloperId;
+
+      if (string.IsNullOrWhiteSpace(taskItemDto.Title) || string.IsNullOrWhiteSpace(taskItemDto.Description))
+      {
+        return BadRequest("Title dan Description tidak boleh kosong.");
+      }
+
+
+      existingTask.Title = taskItemDto.Title;
+      existingTask.Description = taskItemDto.Description;
+      existingTask.StartDate = taskItemDto.StartDate;
+      existingTask.EndDate = taskItemDto.EndDate;
+      existingTask.Priority = taskItemDto.Priority;
+      existingTask.Status = taskItemDto.Status;
+      existingTask.DeveloperId = taskItemDto.DeveloperId;
+      existingTask.ProjectId = taskItemDto.ProjectId;
 
       await _context.SaveChangesAsync();
       return NoContent();
@@ -91,22 +128,26 @@ namespace MyApp.Controllers
     public async Task<IActionResult> DeleteTask(int id)
     {
       var task = await _context.TaskItems.FindAsync(id);
-      if(task == null){
+      if (task == null)
+      {
         return NotFound($"Task with {id} Tidak Ditemukan");
       }
 
-      try{
-      _context.TaskItems.Remove(task);
-      await _context.SaveChangesAsync();
-      return NoContent();
-      
-      }catch(Exception ex){
-      _logger.LogError(ex, $"ERROR SAAT MENGHAPUS TASK {id}", id);
-      return StatusCode(500, "TERJADI KESALAHAN SERVER");
+      try
+      {
+        _context.TaskItems.Remove(task);
+        await _context.SaveChangesAsync();
+        return NoContent();
+
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, $"ERROR SAAT MENGHAPUS TASK {id}", id);
+        return StatusCode(500, "TERJADI KESALAHAN SERVER");
 
       }
 
-    } 
+    }
 
   }
 }
