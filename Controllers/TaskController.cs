@@ -119,8 +119,15 @@ namespace MyApp.Controllers
       existingTask.DeveloperId = taskItemDto.DeveloperId;
       existingTask.ProjectId = taskItemDto.ProjectId;
 
-      await _context.SaveChangesAsync();
-      return NoContent();
+      try
+      {
+        await _context.SaveChangesAsync();
+        return Ok(existingTask);
+      }
+      catch (DbUpdateException)
+      {
+        return StatusCode(500, "Terjadi Kesalahan saat menyimpan Data");
+      }
     }
 
 

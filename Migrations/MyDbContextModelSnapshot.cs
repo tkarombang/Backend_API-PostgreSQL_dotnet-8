@@ -145,6 +145,51 @@ namespace MyApp.Migrations
                     b.ToTable("MyEntities", "public");
                 });
 
+            modelBuilder.Entity("ReportItem", b =>
+                {
+                    b.Property<int>("ReportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("report_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReportId"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date");
+
+                    b.Property<int?>("DeveloperId")
+                        .HasColumnType("integer")
+                        .HasColumnName("developer_id");
+
+                    b.Property<int>("HoursSpent")
+                        .HasColumnType("integer")
+                        .HasColumnName("hours_spent");
+
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("project_id");
+
+                    b.Property<string>("Remarks")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("remarks");
+
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
+
+                    b.HasKey("ReportId");
+
+                    b.HasIndex("DeveloperId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("report", "public");
+                });
+
             modelBuilder.Entity("TaskItem", b =>
                 {
                     b.Property<int>("TaskId")
@@ -216,6 +261,27 @@ namespace MyApp.Migrations
                     b.Navigation("Developers");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("ReportItem", b =>
+                {
+                    b.HasOne("MyApp.Model.Developer", "Developers")
+                        .WithMany()
+                        .HasForeignKey("DeveloperId");
+
+                    b.HasOne("MyApp.Model.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("TaskItem", "TaskItem")
+                        .WithMany()
+                        .HasForeignKey("TaskId");
+
+                    b.Navigation("Developers");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("TaskItem");
                 });
 
             modelBuilder.Entity("TaskItem", b =>

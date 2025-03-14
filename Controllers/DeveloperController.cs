@@ -32,50 +32,50 @@ namespace MyApp.DeveloperControllers
 		[HttpGet("{id:int}")]
 		public async Task<IActionResult> GetDeveloperById(int id)
 		{
-			var developer = await _context.Developers.FirstOrDefaultAsync(d => d.DeveloperId == id);
+			var devByID = await _context.Developers.FirstOrDefaultAsync(d => d.DeveloperId == id);
 
-			if (developer == null)
+			if (devByID == null)
 			{
 				return NotFound($"Developer with ID {id} not found.");
 			}
 
-			return Ok(developer);
+			return Ok(devByID);
 		}
 
 		// GET: api/developers/name/{name}
 		[HttpGet("name/{name}")]
 		public async Task<IActionResult> GetDeveloperByName(string name)
 		{
-			var developers = await _context.Developers
+			var devNama = await _context.Developers
 					.Where(d => EF.Functions.ILike(d.Nama, $"%{name}%"))
 					.ToListAsync();
 
-			if (developers == null || developers.Count == 0)
+			if (devNama == null || devNama.Count == 0)
 			{
 				return NotFound($"No developers found with name containing '{name}'.");
 			}
 
-			return Ok(developers);
+			return Ok(devNama);
 		}
 
 
 		// POST: api/developers
 		[HttpPost]
-		public async Task<IActionResult> CreateDeveloper([FromBody] Developer developer)
+		public async Task<IActionResult> CreateDeveloper([FromBody] Developer devBody)
 		{
 			if(!ModelState.IsValid){
 				return BadRequest(ModelState);
 			}
 
 			// KONVERSI TANGGAL LAHIR KE UTC
-			if(developer.TanggalLahir.HasValue){
-				developer.TanggalLahir = DateTime.SpecifyKind(developer.TanggalLahir.Value, DateTimeKind.Utc);
+			if(devBody.TanggalLahir.HasValue){
+				devBody.TanggalLahir = DateTime.SpecifyKind(devBody.TanggalLahir.Value, DateTimeKind.Utc);
 			}
 
-			_context.Developers.Add(developer);
+			_context.Developers.Add(devBody);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction(nameof(GetDeveloperById), new { id = developer.DeveloperId}, developer);
+			return CreatedAtAction(nameof(GetDeveloperById), new { id = devBody.DeveloperId}, devBody);
 		}
 
 
@@ -91,21 +91,21 @@ namespace MyApp.DeveloperControllers
 				return BadRequest("Developer Id TIDAK ADA");
 			}
 
-			var developer = await _context.Developers.FindAsync(id);
-			if(developer == null)	{
+			var existDev = await _context.Developers.FindAsync(id);
+			if(existDev == null)	{
 				return NotFound($"DEVELOPER DENGAN {id} TIDAK DITEMUKAN");
 			}
 
 			// update data
-			developer.Nama = developerUpdate.Nama;
-			developer.Email = developerUpdate.Email;
-			developer.Role = developerUpdate.Role;
-			developer.Phone = developerUpdate.Phone;
+			existDev.Nama = developerUpdate.Nama;
+			existDev.Email = developerUpdate.Email;
+			existDev.Role = developerUpdate.Role;
+			existDev.Phone = developerUpdate.Phone;
 
 
 			try{
 				await _context.SaveChangesAsync();
-				return Ok(developer);
+				return Ok(existDev);
 			}catch(DbUpdateException){
 				return StatusCode(500, "Terjadi Kesalahaan Saat Menyimpan Data");
 			}
@@ -116,13 +116,13 @@ namespace MyApp.DeveloperControllers
 		[HttpDelete("{id:int}")]
 		public async Task<IActionResult> DeleteDeveloper(int id)
 		{
-			var developer = await _context.Developers.FindAsync(id);
-			if(developer == null){
+			var existDev = await _context.Developers.FindAsync(id);
+			if(existDev == null){
 				return NotFound($"Developer dengan {id} TIDAK DITEMUKAN");
 			}
 
 			try{
-				_context.Developers.Remove(developer);
+				_context.Developers.Remove(existDev);
 				await _context.SaveChangesAsync();
 				return NoContent();
 			}catch(Exception ex){
