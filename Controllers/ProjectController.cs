@@ -26,21 +26,28 @@ namespace MyApp.ProjectControllers
         /// <param name="page">Page number (default: 1).</param>
         /// <param name="pageSize">Number of items per page (default: 10).</param>
         /// <returns>List of all projects.</returns>
+        // [HttpGet]
+        // public async Task<IActionResult> GetAllProject([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        // {
+        //     _logger.LogInformation("Fetching all projects with pagination. Page: {page}, PageSize: {pageSize}", page, pageSize);
+
+        //     if (page <= 0 || pageSize <= 0)
+        //     {
+        //         return BadRequest("Page and pageSize must be greater than zero.");
+        //     }
+
+        //     var projects = await _context.Projects
+        //         .Skip((page - 1) * pageSize)
+        //         .Take(pageSize)
+        //         .ToListAsync();
+
+        //     return Ok(projects);
+        // }
         [HttpGet]
-        public async Task<IActionResult> GetAllProject([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAllProject()
         {
-            _logger.LogInformation("Fetching all projects with pagination. Page: {page}, PageSize: {pageSize}", page, pageSize);
-
-            if (page <= 0 || pageSize <= 0)
-            {
-                return BadRequest("Page and pageSize must be greater than zero.");
-            }
-
             var projects = await _context.Projects
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .ToListAsync();
-
             return Ok(projects);
         }
 

@@ -33,7 +33,7 @@ namespace MyApp.Controllers{
                 return BadRequest("INVALID ID");
             }
 
-            var projeDev = await _context.ProjectDevelopers.FirstOrDefaultAsync(x => x.ProjectId == id);
+            var projeDev = await _context.Project_developer.FirstOrDefaultAsync(x => x.ProjectId == id);
 
             if(projeDev == null){
                 return NotFound(new { message = $"{id} TIDAK DITEMUKAN"});
@@ -65,7 +65,7 @@ namespace MyApp.Controllers{
                 DeveloperId = projeDevDto.DeveloperId
             };
 
-            _context.ProjectDevelopers.Add(projectDevelopers);
+            _context.Project_developer.Add(projectDevelopers);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetProjeDevById), new { id = projeDevDto.ProjectId }, projeDevDto);

@@ -18,8 +18,8 @@ namespace MyApp.Controllers
     [HttpGet]
     public async Task<IActionResult> GetAllReports()
     {
-      var report = await _context.ReportsItems
-        .Include(r => r.Developers)
+      var report = await _context.Reports
+        .Include(r => r.Dev)
         .Include(r => r.Project)
         .Include(r => r.TaskItem)
         .ToListAsync();
@@ -30,8 +30,8 @@ namespace MyApp.Controllers
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetReportsById(int id)
     {
-      var report = await _context.ReportsItems
-        .Include(r => r.Developers)
+      var report = await _context.Reports
+        .Include(r => r.Dev)
         .Include(r => r.Project)
         .Include(r => r.TaskItem)
         .FirstOrDefaultAsync(r => r.ReportId == id);
@@ -54,21 +54,21 @@ namespace MyApp.Controllers
 
       if (rprt == null)
       {
-        return BadRequest(new { message = "data Report tidak bole NULL" });
+        return BadRequest(new { message = "data Report tidak boleh NULL" });
       }
 
       var CreateReportDto = new ReportItem
       {
         ReportId = rprt.ReportId,
-        DeveloperId = rprt.DeveloperId,
-        ProjectId = rprt.ProjectId,
-        TaskId = rprt.TaskId,
+        DeveloperId = rprt.DeveloperId ?? 0,
+        ProjectId = rprt.ProjectId ?? 0,
+        TaskId = rprt.TaskId ?? 0,
         Date = rprt.Date,
         HoursSpent = rprt.HoursSpent,
         Remarks = rprt.Remarks
       };
 
-      _context.ReportsItems.Add(CreateReportDto);
+      _context.Reports.Add(CreateReportDto);
       await _context.SaveChangesAsync();
 
       return CreatedAtAction(nameof(GetReportsById), new { id = CreateReportDto.ReportId }, CreateReportDto);
@@ -82,15 +82,15 @@ namespace MyApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var existReport = await _context.ReportsItems.FindAsync(id);
+      var existReport = await _context.Reports.FindAsync(id);
       if (existReport == null)
       {
         return NotFound($"Report dengan {id} TIDAK DITEMUKAN");
       }
 
-      existReport.DeveloperId = reportUpdate.DeveloperId;
-      existReport.ProjectId = reportUpdate.ProjectId;
-      existReport.TaskId = reportUpdate.TaskId;
+      existReport.DeveloperId = reportUpdate.DeveloperId ?? 0;
+      existReport.ProjectId = reportUpdate.ProjectId ?? 0;
+      existReport.TaskId = reportUpdate.TaskId ?? 0;
       existReport.Date = reportUpdate.Date;
       existReport.HoursSpent = reportUpdate.HoursSpent;
       existReport.Remarks = reportUpdate.Remarks;
@@ -110,7 +110,7 @@ namespace MyApp.Controllers
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteReport(int id)
     {
-      var existReport = await _context.ReportsItems.FindAsync(id);
+      var existReport = await _context.Reports.FindAsync(id);
 
       if (existReport == null)
       {
@@ -119,7 +119,7 @@ namespace MyApp.Controllers
 
       try
       {
-        _context.ReportsItems.Remove(existReport);
+        _context.Reports.Remove(existReport);
         await _context.SaveChangesAsync();
         return NoContent();
       }

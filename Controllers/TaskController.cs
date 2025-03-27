@@ -22,9 +22,9 @@ namespace MyApp.Controllers
     {
 
       _logger.LogInformation("Fetching All Task");
-      var task = await _context.TaskItems
+      var task = await _context.Tasks
         .Include(t => t.Project) //RELASI KE PROJECT
-        .Include(t => t.Developers) //RELASI KE DEVELOPER
+        .Include(t => t.Dev) //RELASI KE DEVELOPER
         .ToListAsync();
 
       return Ok(task);
@@ -34,9 +34,9 @@ namespace MyApp.Controllers
     public async Task<IActionResult> GetTaskById(int id)
     {
       _logger.LogInformation("Fetching All Task");
-      var task = await _context.TaskItems
+      var task = await _context.Tasks
         .Include(t => t.Project)
-        .Include(t => t.Developers)
+        .Include(t => t.Dev)
         .FirstOrDefaultAsync(t => t.TaskId == id);
 
       if (task == null)
@@ -78,11 +78,11 @@ namespace MyApp.Controllers
         EndDate = dtoTask.EndDate,
         Priority = dtoTask.Priority,
         Status = dtoTask.Status,
-        DeveloperId = dtoTask.DeveloperId,
+        DeveloperId = dtoTask.DeveloperId ?? 0,
         ProjectId = dtoTask.ProjectId
       };
 
-      _context.TaskItems.Add(createTaskDto);
+      _context.Tasks.Add(createTaskDto);
       await _context.SaveChangesAsync();
 
       return CreatedAtAction(nameof(GetTaskById), new { id = createTaskDto.TaskId }, createTaskDto);
@@ -97,7 +97,7 @@ namespace MyApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var existingTask = await _context.TaskItems.FindAsync(id);
+      var existingTask = await _context.Tasks.FindAsync(id);
       if (existingTask == null)
       {
         return NotFound($"Task dengan {id} Tidak Ditemukan");
@@ -116,7 +116,7 @@ namespace MyApp.Controllers
       existingTask.EndDate = taskItemDto.EndDate;
       existingTask.Priority = taskItemDto.Priority;
       existingTask.Status = taskItemDto.Status;
-      existingTask.DeveloperId = taskItemDto.DeveloperId;
+      existingTask.DeveloperId = taskItemDto.DeveloperId ?? 0;
       existingTask.ProjectId = taskItemDto.ProjectId;
 
       try
@@ -134,7 +134,7 @@ namespace MyApp.Controllers
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
-      var task = await _context.TaskItems.FindAsync(id);
+      var task = await _context.Tasks.FindAsync(id);
       if (task == null)
       {
         return NotFound($"Task with {id} Tidak Ditemukan");
@@ -142,7 +142,7 @@ namespace MyApp.Controllers
 
       try
       {
-        _context.TaskItems.Remove(task);
+        _context.Tasks.Remove(task);
         await _context.SaveChangesAsync();
         return NoContent();
 

@@ -58,55 +58,112 @@ namespace MyApp.DeveloperControllers
 			return Ok(devNama);
 		}
 
+		[HttpPost("bulk")]
+		public async Task<IActionResult> AddBulkDevelopers([FromBody] List<CreateDeveloperDTO> developerDtos)
+		{
+
+			var developers = developerDtos.Select(d => new Developer
+			{
+				Nama = d.Nama,
+				Email = d.Email,
+				Role = d.Role,
+				Phone = d.Phone,
+				TanggalLahir = d.TanggalLahir.HasValue
+					? DateTime.SpecifyKind(d.TanggalLahir.Value, DateTimeKind.Utc)
+					: null,
+				Status = d.Status,
+				Gender = (JenisKelamin?)d.Gender,
+			}).ToList();
+		
+			_context.Developers.AddRange(developers);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
 
 		// POST: api/developers
 		[HttpPost]
-		public async Task<IActionResult> CreateDeveloper([FromBody] Developer devBody)
+		public async Task<IActionResult> CreateDeveloper([FromBody] CreateDeveloperDTO dtoBody)
 		{
-			if(!ModelState.IsValid){
-				return BadRequest(ModelState);
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			if (await _context.Developers.AnyAsync(e => e.Email == dtoBody.Email))
+			{
+				return BadRequest($"Email {dtoBody.Email} Sudah Digunakan Oleh Developer lain");
 			}
 
-			// KONVERSI TANGGAL LAHIR KE UTC
-			if(devBody.TanggalLahir.HasValue){
-				devBody.TanggalLahir = DateTime.SpecifyKind(devBody.TanggalLahir.Value, DateTimeKind.Utc);
+			var developer = new Developer
+			{
+				Nama = dtoBody.Nama,
+				Email = dtoBody.Email.ToLowerInvariant(),
+				Role = dtoBody.Role,
+				Phone = dtoBody.Phone,
+				TanggalLahir = dtoBody.TanggalLahir.HasValue
+					? DateTime.SpecifyKind(dtoBody.TanggalLahir.Value, DateTimeKind.Utc)
+					: null,
+				Status = dtoBody.Status,
+				Gender = dtoBody.Gender.HasValue
+					? (JenisKelamin?)dtoBody.Gender
+					: null,
+			};
+
+			try
+			{
+				_context.Developers.Add(developer);
+				await _context.SaveChangesAsync();
+
+				return CreatedAtAction(nameof(GetDeveloperById), new { id = developer.DeveloperId }, developer);
+
+			}
+			catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException mailUniq && mailUniq.SqlState == "23505")
+			{
+				return BadRequest($"Email {dtoBody.Email} Sudah Digunakan Oleh Developer lain");
 			}
 
-			_context.Developers.Add(devBody);
-			await _context.SaveChangesAsync();
-
-			return CreatedAtAction(nameof(GetDeveloperById), new { id = devBody.DeveloperId}, devBody);
 		}
 
 
 		//PUT: api/developers/{id}
 		[HttpPut("{id:int}")]
-		public async Task<IActionResult> UpdateDeveloper(int id, [FromBody] Developer developerUpdate)
+		public async Task<IActionResult> UpdateDeveloper(int id, [FromBody] UpdateDeveloperDTO dtoUpdateDev)
 		{
-			if(!ModelState.IsValid){
+			if (!ModelState.IsValid)
+			{
 				return BadRequest(ModelState);
 			}
 
-			if (id != developerUpdate.DeveloperId){
+			if (id != dtoUpdateDev.DeveloperId)
+			{
 				return BadRequest("Developer Id TIDAK ADA");
 			}
 
 			var existDev = await _context.Developers.FindAsync(id);
-			if(existDev == null)	{
+			if (existDev == null)
+			{
 				return NotFound($"DEVELOPER DENGAN {id} TIDAK DITEMUKAN");
 			}
 
 			// update data
-			existDev.Nama = developerUpdate.Nama;
-			existDev.Email = developerUpdate.Email;
-			existDev.Role = developerUpdate.Role;
-			existDev.Phone = developerUpdate.Phone;
+			existDev.Nama = dtoUpdateDev.Nama;
+			existDev.Email = dtoUpdateDev.Email.ToLowerInvariant();
+			existDev.Role = dtoUpdateDev.Role;
+			existDev.Phone = dtoUpdateDev.Phone;
+			existDev.TanggalLahir = dtoUpdateDev.TanggalLahir.HasValue
+				? DateTime.SpecifyKind(dtoUpdateDev.TanggalLahir.Value, DateTimeKind.Utc)
+				: null;
+			existDev.Status = dtoUpdateDev.Status;
+			existDev.Gender = dtoUpdateDev.Gender.HasValue
+				? (JenisKelamin?)dtoUpdateDev.Gender
+				: null;
 
 
-			try{
+			try
+			{
 				await _context.SaveChangesAsync();
 				return Ok(existDev);
-			}catch(DbUpdateException){
+			}
+			catch (DbUpdateException)
+			{
 				return StatusCode(500, "Terjadi Kesalahaan Saat Menyimpan Data");
 			}
 		}
@@ -117,16 +174,30 @@ namespace MyApp.DeveloperControllers
 		public async Task<IActionResult> DeleteDeveloper(int id)
 		{
 			var existDev = await _context.Developers.FindAsync(id);
-			if(existDev == null){
+			if (existDev == null)
+			{
 				return NotFound($"Developer dengan {id} TIDAK DITEMUKAN");
 			}
 
-			try{
+			try
+			{
 				_context.Developers.Remove(existDev);
 				await _context.SaveChangesAsync();
 				return NoContent();
-			}catch(Exception ex){
-				return BadRequest(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				// Log detail error ke konsol atau logger
+				Console.WriteLine($"Error: {ex.Message}");
+				if (ex.InnerException != null)
+				{
+					Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+				}
+				return BadRequest(new
+				{
+					Message = ex.Message,
+					InnerException = ex.InnerException?.Message
+				});
 			}
 		}
 	}
